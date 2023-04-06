@@ -1,6 +1,9 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import RbtGui
 
 Popup {
     id: _popup
@@ -25,8 +28,8 @@ Popup {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: mbSpacing
-        spacing: mbSpacing
+        anchors.margins: _popup.mbSpacing
+        spacing: _popup.mbSpacing
 
         Label {
             id: _title
@@ -34,7 +37,7 @@ Popup {
             font.pixelSize: Qt.application.font.pixelSize * 1.6
             font.weight: Font.ExtraBold
             Layout.fillWidth: true
-            Layout.bottomMargin: mbSpacing * 2
+            Layout.bottomMargin: _popup.mbSpacing * 2
         }
         Label {
             id: _message
@@ -47,8 +50,8 @@ Popup {
             Layout.fillWidth: true
             Layout.preferredWidth: parent.width
             Layout.preferredHeight: _button_ok.height
-            Layout.topMargin: mbSpacing
-            spacing: mbSpacing * 2
+            Layout.topMargin: _popup.mbSpacing
+            spacing: _popup.mbSpacing * 2
             Item {
                 Layout.fillWidth: true
             }
@@ -57,7 +60,7 @@ Popup {
                 text: "OK"
                 onClicked: {
                     _popup.close()
-                    if (_callerID !== 0) { _popup.accepted(_callerID) }
+                    if (_popup._callerID !== 0) { _popup.accepted(_popup._callerID) }
                 }
             }
             Button {
@@ -65,7 +68,7 @@ Popup {
                 text: qsTr("Cancel")
                 onClicked: {
                     _popup.close()
-                    if (_callerID !== 0) { _popup.rejected(_callerID) }
+                    if (_popup._callerID !== 0) { _popup.rejected(_popup._callerID) }
                 }
             }
             Item {

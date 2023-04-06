@@ -1,9 +1,10 @@
+pragma ComponentBehavior: Bound
+
+import QtCore
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
-import Qt.labs.settings
-
-import "RbtGuiFunctions.js" as RbtGui
+import RbtGui
 
 ApplicationWindow {
     id: appWindow
@@ -19,11 +20,6 @@ ApplicationWindow {
 
         property bool isDarkTheme: sysPalette.light.hsvValue < sysPalette.dark.hsvValue
     }
-
-    property real  tbIconWidth: 32
-    property real  tbIconHeight: 32
-    property real  tbIconMargins: 4
-    property real  tbSpacing: 4
 
     property var   projectList: []
 
@@ -63,18 +59,19 @@ ApplicationWindow {
         id: drawer
         width: appWindow.width * 0.4
         height: appWindow.height
-        onClosed: resetFocus()
+        onClosed: appWindow.resetFocus()
     }
 
     StackView {
         id: stackView
         anchors.fill: parent
-        initialItem: pageMain
+
+        Component.onCompleted: appWindow.activatePage("RbtGuiStartPage.qml")
 
         focus: true
         Keys.onBackPressed: {
             if (stackView.depth > 1) {
-                activatePreviousPage()
+                appWindow.activatePreviousPage()
             } else {
                 handleEscapePressed()
             }
@@ -86,7 +83,7 @@ ApplicationWindow {
             messageDialog.showMessage(
                     qsTr("You are about to quit the application.\n\nQuit?"),
                     qsTr("Warning"),
-                    /*cllerID*/1)
+                    /*callerID*/1)
         }
         Connections {
             target: messageDialog
@@ -97,30 +94,18 @@ ApplicationWindow {
         }
     }
 
-    Component {
-        id: pageMain
-        Page {
-            title: qsTr("Reviews")
-            anchors.fill: parent
-            Label {
-                anchors.centerIn: parent
-                text: "Test test test"
-            }
-        }
-    }
-
     FileDialog {
         id: fileDialog
         nameFilters: [
             "Review Board RC file (.reviewboardrc)"
         ]
         onAccepted: {
-            var projectFolder = RbtGui.urlToLocalPath(fileDialog.currentFolder)
+            var projectFolder = RbtGuiFunctions.urlToLocalPath(fileDialog.currentFolder)
             appSettings.app_opendlg_folder = projectFolder
             appSettings.addProject(projectFolder)
         }
         onRejected: {
-            appSettings.app_opendlg_folder = RbtGui.urlToLocalPath(fileDialog.currentFolder)
+            appSettings.app_opendlg_folder = RbtGuiFunctions.urlToLocalPath(fileDialog.currentFolder)
         }
     }
 
@@ -145,9 +130,9 @@ ApplicationWindow {
         appWindow.projectList = list_.split("\n").filter(s => s.length)
 
         if (appSettings.app_opendlg_folder.length > 0) {
-            fileDialog.currentFolder = RbtGui.localPathToUrl(
+            fileDialog.currentFolder = RbtGuiFunctions.localPathToUrl(
                     appSettings.app_opendlg_folder,
-                    RbtGui.PathIsDir)
+                    RbtGuiFunctions.PathIsDir)
         }
     }
 

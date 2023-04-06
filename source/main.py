@@ -13,12 +13,14 @@ if __name__ == '__main__':
     QGuiApplication.setOrganizationName("rbt-gui")
     QGuiApplication.setApplicationName("rbt-gui")
     app = QGuiApplication(sys.argv)
-    icon = QIcon(str(APP_DIR / "app_icon.svg"))
+    icon = QIcon(str(APP_DIR / "RbtGui/Icons/app_icon.svg"))
     app.setWindowIcon(icon)
 
     QQuickStyle.setStyle("Universal")
     engine = QQmlApplicationEngine()
-    engine.load(APP_DIR / "RbtGuiMainWindow.qml")
+    engine.addImportPath(APP_DIR)
+    engine.loadFromModule("RbtGui", "Main")
+
     if not engine.rootObjects():
         sys.exit(-1)
 

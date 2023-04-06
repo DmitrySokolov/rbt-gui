@@ -1,0 +1,9 @@
+module RbtGui
+Main 1.0 Main.qml
+RbtGuiAboutPage 1.0 RbtGuiAboutPage.qml
+singleton RbtGuiConst 1.0 RbtGuiConst.qml
+RbtGuiDrawer 1.0 RbtGuiDrawer.qml
+RbtGuiFunctions 1.0 RbtGuiFunctions.js
+RbtGuiMessageDialog 1.0 RbtGuiMessageDialog.qml
+RbtGuiSettingsPage 1.0 RbtGuiSettingsPage.qml
+RbtGuiToolBar 1.0 RbtGuiToolBar.qml

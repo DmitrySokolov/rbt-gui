@@ -1,17 +1,20 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import RbtGui
 
 ToolBar {
     id: _toolbar
     width: appWindow.width
-    height: tbIconHeight + tbIconMargins + tbIconMargins
+    height: RbtGuiConst.tbIconHeight + RbtGuiConst.tbIconMargins * 2
 
     Keys.forwardTo: [stackView]
 
     RowLayout {
         anchors.fill: parent
-        spacing: tbSpacing
+        spacing: RbtGuiConst.tbSpacing
 
         Flickable {
             Layout.fillWidth: true
@@ -27,7 +30,7 @@ ToolBar {
 
             RowLayout {
                 id: _tbRow
-                spacing: tbSpacing
+                spacing: RbtGuiConst.tbSpacing
 
                 ToolButton {
                     ToolTip.text: qsTr("Menu")
@@ -58,7 +61,7 @@ ToolBar {
             Layout.minimumHeight: _toolbar.height
             Layout.preferredHeight: _toolbar.height
             Layout.maximumHeight: _toolbar.height
-            Layout.rightMargin: tbSpacing + tbSpacing
+            Layout.rightMargin: RbtGuiConst.tbSpacing *2
             contentWidth: _label.width
             contentHeight: _toolbar.height
             contentX: contentWidth - width

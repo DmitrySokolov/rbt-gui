@@ -1,8 +1,9 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-
-import "RbtGuiFunctions.js" as RbtGui
+import RbtGui
 
 Drawer {
     id: _drawer
@@ -19,7 +20,7 @@ Drawer {
 
             ItemDelegate {
                 id: _addProjectItem
-                text: qsTr("Add project...")
+                text: qsTr("Open source folder...")
                 Layout.fillWidth: true
                 onClicked: {
                     _drawer.close()
@@ -28,7 +29,7 @@ Drawer {
             }
 
             Label {
-                text: qsTr("Known projects")
+                text: qsTr("Known source folders")
                 Layout.fillWidth: true
                 leftPadding: _drawer.itemLeftPadding
             }
@@ -50,20 +51,27 @@ Drawer {
                 }
 
                 delegate: ItemDelegate {
-                    text: RbtGui.basename(name)
+                    required property string name
+                    text: RbtGuiFunctions.basename(name)
                     width: parent.width
                     leftPadding: _drawer.itemLeftPadding * 3
                     //onClicked: {
                     //    _drawer.close()
-                    //    openProjectSettings(projectList[index])
+                    //    openProjectSettings(appWindow.projectList[index])
                     //}
                 }
             }  // ListView: _knownProjects
 
+            ItemDelegate {
+                text: qsTr("Settings...")
+                Layout.fillWidth: true
+                onClicked: appWindow.activatePage("RbtGuiSettingsPage.qml")
+            }
+
             //ItemDelegate {
             //    text: qsTr("About...")
             //    Layout.fillWidth: true
-            //    onClicked: activatePage("RbtGuiPageAbout.qml")
+            //    onClicked: activatePage("RbtGuiAboutPage.qml")
             //}
 
             ItemDelegate {
@@ -81,7 +89,7 @@ Drawer {
         Component.onCompleted: {
             _drawer.itemLeftPadding = _addProjectItem.leftPadding
             _drawer.itemTopPadding = _addProjectItem.topPadding
-            projectList.forEach(val => _knownProjectsList.append({"name": val}))
+            appWindow.projectList.forEach(val => _knownProjectsList.append({"name": val}))
         }
 
         Connections {
