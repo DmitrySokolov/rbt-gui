@@ -52,13 +52,14 @@ Drawer {
 
                 delegate: ItemDelegate {
                     required property string name
+                    required property int index
                     text: RbtGuiFunctions.basename(name)
                     width: parent.width
                     leftPadding: _drawer.itemLeftPadding * 3
-                    //onClicked: {
-                    //    _drawer.close()
-                    //    openProjectSettings(appWindow.projectList[index])
-                    //}
+                    onClicked: {
+                        _drawer.close()
+                        appWindow.openProject(appWindow.projectList[index])
+                    }
                 }
             }  // ListView: _knownProjects
 

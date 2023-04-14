@@ -103,6 +103,7 @@ ApplicationWindow {
             var projectFolder = RbtGuiFunctions.urlToLocalPath(fileDialog.currentFolder)
             appSettings.app_opendlg_folder = projectFolder
             appSettings.addProject(projectFolder)
+            appWindow.openProject(projectFolder)
         }
         onRejected: {
             appSettings.app_opendlg_folder = RbtGuiFunctions.urlToLocalPath(fileDialog.currentFolder)
@@ -155,8 +156,9 @@ ApplicationWindow {
         resetFocus()
     }
 
-    //function openProjectSettings(projectFolder) {
-    //
-    //}
+    function openProject(projectFolder) {
+        console.info(`opening: '${projectFolder}'`)
+        Repository.getModifiedFiles(projectFolder)
+    }
 
 }  // ApplicationWindow
