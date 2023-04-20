@@ -23,7 +23,7 @@ class SvnItem:
     locked_flag: bool
     history_addition_flag: bool
     switched_flag: bool
-    locked_type_flag: str
+    lock_type_flag: str
     tree_conflict_flag: bool
 
 
@@ -64,7 +64,7 @@ class SvnRepository(QAbstractListModel):
                         locked_flag=(m[3] == "L"),
                         history_addition_flag=(m[4] == "+"),
                         switched_flag=(m[5] == "S"),
-                        locked_type_flag=m[6],
+                        lock_type_flag=m[6],
                         tree_conflict_flag=(m[7] == "C")
                     ))
                     self.endInsertRows()

@@ -105,7 +105,7 @@ ApplicationWindow {
             "Review Board RC file (.reviewboardrc)"
         ]
         onAccepted: {
-            var projectFolder = RbtGuiFunctions.urlToLocalPath(fileDialog.currentFolder)
+            const projectFolder = RbtGuiFunctions.urlToLocalPath(fileDialog.currentFolder)
             appSettings.app_opendlg_folder = projectFolder
             appSettings.addProject(projectFolder)
             appWindow.openProject(projectFolder)

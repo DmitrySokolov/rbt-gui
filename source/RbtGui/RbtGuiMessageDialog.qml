@@ -89,8 +89,8 @@ Popup {
     property int _callerID: 0
 
     function showMessage(message, title, callerID, buttons) {
-        var id_ = callerID || 0
-        var buttons_ = id_ !== 0 ? (buttons || 2) : 1
+        const id_ = callerID || 0
+        const buttons_ = id_ !== 0 ? (buttons || 2) : 1
         _title.text = title
         _message.text = message
         _button_cancel.visible = buttons_ >= 2
