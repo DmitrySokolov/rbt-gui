@@ -69,11 +69,11 @@ Drawer {
                 onClicked: appWindow.activatePage("RbtGuiSettingsPage.qml")
             }
 
-            //ItemDelegate {
-            //    text: qsTr("About...")
-            //    Layout.fillWidth: true
-            //    onClicked: activatePage("RbtGuiAboutPage.qml")
-            //}
+            ItemDelegate {
+                text: qsTr("About...")
+                Layout.fillWidth: true
+                onClicked: appWindow.activatePage("RbtGuiAboutPage.qml")
+            }
 
             ItemDelegate {
                 text: qsTr("Exit")

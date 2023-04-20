@@ -21,7 +21,11 @@ ApplicationWindow {
         property bool isDarkTheme: sysPalette.light.hsvValue < sysPalette.dark.hsvValue
     }
 
-    property var   projectList: []
+    property var    projectList: []
+    property string projectFolder: ""
+    property var    repository
+
+    signal projectOpened(string projectFolder)
 
     Settings {
         id: appSettings
@@ -39,8 +43,9 @@ ApplicationWindow {
         property string app_opendlg_folder: ""
 
         function addProject(path) {
-            if (appWindow.projectList.indexOf(path) >= 0) { return }
-            appWindow.projectList.push(path)
+            const i = appWindow.projectList.indexOf(path)
+            if (i >= 0) { appWindow.projectList.splice(i, 1) }
+            appWindow.projectList.unshift(path)
             appSettings.app_project_list = appWindow.projectList.join("\n")
             appSettings.app_project_count = appWindow.projectList.length
             appSettings.sync()
@@ -141,7 +146,8 @@ ApplicationWindow {
         stackView.focus = true  // to catch 'backPressed' event
     }
 
-    function activatePage(name) {
+    function activatePage(name, clearStack) {
+        if (clearStack) { stackView.clear() }
         if (stackView.currentItem && stackView.currentItem.objectName === name) { return }
         drawer.close()
         stackView.push(name)
@@ -158,7 +164,13 @@ ApplicationWindow {
 
     function openProject(projectFolder) {
         console.info(`opening: '${projectFolder}'`)
-        Repository.getModifiedFiles(projectFolder)
+        appWindow.projectFolder = projectFolder
+        const t = Repository.getVcsType(projectFolder)
+        if (t === "svn") {
+            appWindow.repository = SvnRepository
+        }
+        appWindow.activatePage("RbtGuiRepositoryPage.qml", /*clearStack=*/true)
+        appWindow.projectOpened(projectFolder)
     }
 
 }  // ApplicationWindow

@@ -5,5 +5,10 @@ singleton RbtGuiConst 1.0 RbtGuiConst.qml
 RbtGuiDrawer 1.0 RbtGuiDrawer.qml
 RbtGuiFunctions 1.0 RbtGuiFunctions.js
 RbtGuiMessageDialog 1.0 RbtGuiMessageDialog.qml
+RbtGuiRepositoryPage 1.0 RbtGuiRepositoryPage.qml
+RbtGuiReviewAddPage 1.0 RbtGuiReviewAddPage.qml
+RbtGuiReviewClosePage 1.0 RbtGuiReviewClosePage.qml
+RbtGuiReviewUpdatePage 1.0 RbtGuiReviewUpdatePage.qml
 RbtGuiSettingsPage 1.0 RbtGuiSettingsPage.qml
+RbtGuiStartPage 1.0 RbtGuiStartPage.qml
 RbtGuiToolBar 1.0 RbtGuiToolBar.qml

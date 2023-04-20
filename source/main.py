@@ -1,5 +1,10 @@
-import sys
+#!/usr/bin/env python3
+# coding: utf-8
+
 from pathlib import Path
+
+from lib import *
+from svn_repository import *
 
 from PySide6.QtCore import QSettings, QObject, Slot
 from PySide6.QtGui import QGuiApplication, QIcon
@@ -36,9 +41,15 @@ class Repository(QObject):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
-    @Slot(str)
-    def getModifiedFiles(self, path):
-        print(f"getting modified files in '{path}'")
+    @Slot(str, result=str)
+    def getVcsType(self, path: str) -> str:
+        if fs.isfile(fs.join(path, ".svn/format")):
+            return "svn"
+        elif fs.isfile(fs.join(path, ".git/config")):
+            return "git"
+        elif fs.isfile(fs.join(path, ".hg/requires")):
+            return "hg"
+        return None
 
 
 if __name__ == '__main__':

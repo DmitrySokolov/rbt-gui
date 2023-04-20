@@ -32,25 +32,89 @@ ToolBar {
                 id: _tbRow
                 spacing: RbtGuiConst.tbSpacing
 
-                ToolButton {
-                    ToolTip.text: qsTr("Menu")
+                component RbtGuiToolButton : ToolButton {
+                    Layout.preferredHeight: _toolbar.height
+                    Layout.preferredWidth: _toolbar.height
                     ToolTip.visible: hovered || pressed
                     ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
+                    Universal.accent: "#FFA0A0A0"
+                    icon.color: "transparent"
+                    icon.width: RbtGuiConst.tbIconWidth
+                    icon.height: RbtGuiConst.tbIconHeight
+                    display: AbstractButton.IconOnly
+                    opacity: parent.enabled ? 1.0 : 0.5
+                }
+
+                RbtGuiToolButton {
+                    ToolTip.text: qsTr("Menu")
 
                     id: _tbMenuBtn
                     text: stackView.depth > 1 ? "\u25C0" : "\u2261"
                     font.pixelSize: Qt.application.font.pixelSize * 1.6
-                    Layout.preferredHeight: _toolbar.height
-                    Layout.preferredWidth: _toolbar.height
+                    display: AbstractButton.TextOnly
+                    opacity: 1.0
+
                     onClicked: {
                         if (stackView.depth > 1) {
-                            activatePreviousPage()
+                            appWindow.activatePreviousPage()
                         } else {
                             drawer.open()
                         }
                     }
                 }
 
+                Loader {
+                    id: _loader
+                }
+
+                Component {
+                    id: _repositoryButtons
+                    Item {
+                        width: _repositoryButtonsRow.implicitWidth
+                        height: _repositoryButtonsRow.implicitHeight
+                        ButtonGroup {
+                            buttons: _repositoryButtonsRow.children
+                        }
+                        RowLayout {
+                            id: _repositoryButtonsRow
+                            spacing: RbtGuiConst.tbSpacing
+                            enabled: stackView.depth < 2
+
+                            RbtGuiToolButton {
+                                id: _repositoryPageBtn
+                                ToolTip.text: qsTr("Repository poperties")
+                                icon.source: "Icons/repo_props.svg"
+                                checkable: true
+                                checked: true
+                                onClicked: appWindow.activatePage("RbtGuiRepositoryPage.qml", /*clearStack=*/true)
+                            }
+                            RbtGuiToolButton {
+                                ToolTip.text: qsTr("Add review")
+                                icon.source: "Icons/review_add.svg"
+                                checkable: true
+                                onClicked: appWindow.activatePage("RbtGuiReviewAddPage.qml", /*clearStack=*/true)
+                            }
+                            RbtGuiToolButton {
+                                ToolTip.text: qsTr("Update review")
+                                icon.source: "Icons/review_update.svg"
+                                checkable: true
+                                onClicked: appWindow.activatePage("RbtGuiReviewUpdatePage.qml", /*clearStack=*/true)
+                            }
+                            RbtGuiToolButton {
+                                ToolTip.text: qsTr("Close review")
+                                icon.source: "Icons/review_close.svg"
+                                checkable: true
+                                onClicked: appWindow.activatePage("RbtGuiReviewClosePage.qml", /*clearStack=*/true)
+                            }
+                        }
+                        Connections {
+                            target: appWindow
+                            function onProjectOpened(projectFolder) {
+                                _repositoryPageBtn.checked = true
+                            }
+                        }
+                    }
+                }  // Component: _repositoryButtons
             }  // RowLayout: _tbRow
         }  // Flickable
 
@@ -69,7 +133,7 @@ ToolBar {
 
             Label {
                 id: _label
-                text: stackView.currentItem.title
+                text: stackView.currentItem ? stackView.currentItem.title : ""
                 horizontalAlignment: Text.AlignRight
                 verticalAlignment: Text.AlignVCenter
                 width: Math.max(implicitWidth, _title.width)
@@ -85,12 +149,11 @@ ToolBar {
         _tbMenuBtn.ToolTip.toolTip.y = Qt.binding(() => parent.y + parent.implicitHeight + 16)
     }
 
-    //function _enableButton(btn, isEnabled) {
-    //    btn.enabled = isEnabled
-    //    btn.opacity = (isEnabled ? 1.0 : 0.5)
-    //}
-    //
-    //function enableButtons(isEnabled) {
-    //}
+    Connections {
+        target: appWindow
+        function onProjectOpened(projectFolder) {
+            _loader.sourceComponent = _repositoryButtons
+        }
+    }
 
 }  // ToolBar
