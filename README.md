@@ -1,5 +1,5 @@
 Review Board tools GUI
-**********************
+======================
 
 A handy GUI app for [RBTools](https://www.reviewboard.org/docs/rbtools/).
 
