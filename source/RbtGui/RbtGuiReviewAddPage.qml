@@ -82,13 +82,42 @@ Pane {
                 Layout.leftMargin: 8
 
                 Label {
-                    text: qsTr("Review summary")
+                    text: qsTr("Bugs closed")
                     Layout.fillWidth: true
                 }
                 TextField {
-                    id: _summary
+                    id: _bugsClosed
                     text: ""
                     Layout.fillWidth: true
+                }
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        Label {
+                            text: qsTr("Review summary")
+                            Layout.fillWidth: true
+                        }
+                        TextField {
+                            id: _summary
+                            text: ""
+                            Layout.fillWidth: true
+                        }
+                    }
+                    Button {
+                        Layout.preferredWidth: RbtGuiConst.tbButtonWidth
+                        Layout.preferredHeight: RbtGuiConst.tbButtonHeight
+                        Layout.alignment: Qt.AlignBottom
+                        ToolTip.visible: hovered || pressed
+                        ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
+                        ToolTip.text: qsTr("Fetch summary using bug ID")
+                        icon.source: "Icons/bugz_fetch.svg"
+                        icon.color: "transparent"
+                        icon.width: RbtGuiConst.tbIconWidth
+                        icon.height: RbtGuiConst.tbIconHeight
+                        display: AbstractButton.IconOnly
+                    }
                 }
 
                 Label {
@@ -105,28 +134,37 @@ Pane {
                     }
                 }
 
-                Item {
+                Label {
+                    text: qsTr("Testing done")
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
                     Layout.topMargin: 5
-                    ColumnLayout {
-                        anchors.fill: parent
-                        Button {
-                            text: qsTr("View diff")
-                            Layout.preferredWidth: 120
-                            Layout.alignment: Qt.AlignCenter
-                        }
-                        Button {
-                            text: qsTr("Post review")
-                            Layout.preferredWidth: 120
-                            Layout.alignment: Qt.AlignCenter
-                        }
-                        Item {
-                            Layout.fillHeight: true
-                        }
+                }
+                ScrollView {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: _summary.height * 3
+                    TextArea {
+                        id: _testingDone
+                        text: ""
                     }
                 }
-            }
+
+                ColumnLayout {
+                    Layout.alignment: Qt.AlignHCenter
+                    Layout.fillHeight: true
+                    Layout.topMargin: 5
+                    Button {
+                        text: qsTr("View diff")
+                        Layout.preferredWidth: 120
+                    }
+                    Button {
+                        text: qsTr("Post review")
+                        Layout.preferredWidth: 120
+                    }
+                    Item {
+                        Layout.fillHeight: true
+                    }
+                }
+            }  // ColumnLayout
         }  // ColumnLayout
     }  // SplitView: _splitView
 

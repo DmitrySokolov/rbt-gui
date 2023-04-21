@@ -8,7 +8,7 @@ import RbtGui
 ToolBar {
     id: _toolbar
     width: appWindow.width
-    height: RbtGuiConst.tbIconHeight + RbtGuiConst.tbIconMargins * 2
+    height: RbtGuiConst.tbButtonHeight
 
     Keys.forwardTo: [stackView]
 
