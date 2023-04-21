@@ -12,9 +12,8 @@ from PySide6.QtGui import QGuiApplication, QIcon
 from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtQuickControls2 import QQuickStyle
 
+
 APP_DIR = Path(__file__).parent
-QML_IMPORT_NAME = "RbtGui"
-QML_IMPORT_MAJOR_VERSION = 1
 
 
 def main():

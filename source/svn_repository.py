@@ -3,15 +3,7 @@
 
 from lib import *
 
-from subprocess import PIPE, Popen
-from threading  import Thread
-
-from PySide6.QtCore import Qt, Slot, QAbstractListModel, QModelIndex
-from PySide6.QtQml import QmlElement, QmlSingleton
-
-
-QML_IMPORT_NAME = "RbtGui"
-QML_IMPORT_MAJOR_VERSION = 1
+from PySide6.QtCore import QAbstractListModel, QModelIndex
 
 
 @dc.dataclass
@@ -70,7 +62,7 @@ class SvnRepository(QAbstractListModel):
                     self.endInsertRows()
             stream.close()
 
-        p = Popen(['svn', 'diff', '--summarize'], stdout=PIPE, bufsize=1, text=True, cwd=self.root_dir)
+        p = sp.Popen(['svn', 'diff', '--summarize'], stdout=sp.PIPE, bufsize=1, text=True, cwd=self.root_dir)
         t = Thread(target=_read, args=[p.stdout])
         t.daemon = True  # thread dies with the program
         t.start()

@@ -3,13 +3,6 @@
 
 from lib import *
 
-from PySide6.QtCore import QObject, Slot
-from PySide6.QtQml import QmlElement, QmlSingleton
-
-
-QML_IMPORT_NAME = "RbtGui"
-QML_IMPORT_MAJOR_VERSION = 1
-
 
 @QmlElement
 @QmlSingleton

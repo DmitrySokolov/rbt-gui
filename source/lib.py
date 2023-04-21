@@ -9,8 +9,14 @@ import subprocess as sp
 import dataclasses as dc
 
 from subprocess import SubprocessError, CalledProcessError
+from threading import Thread
 from typing import NewType, TypeVar, Type, Any, Union, Optional, Generator, Iterable, Iterator, TextIO
 
+from PySide6.QtCore import QObject, Qt, Slot
+from PySide6.QtQml import QmlElement, QmlSingleton
+
+QML_IMPORT_NAME = "RbtGui"
+QML_IMPORT_MAJOR_VERSION = 1
 
 ExitCode = NewType("ExitCode", int)
 Encoding = TypeVar("Encoding")
@@ -43,8 +49,11 @@ def unique(*args: Union[str, Iterable[str]]) -> list[str]:
 
 
 __all__ = [
-    "sys", "os", "fs", "re", "sp", "SubprocessError", "CalledProcessError", "dc",
-    "NewType", "TypeVar", "Type", "Any", "Union", "Optional", "Generator", "Iterable", "Iterator", "TextIO",
+    "sys", "os", "fs", "re", "sp", "dc", "SubprocessError", "CalledProcessError", "Thread",
+    "NewType", "TypeVar", "Type", "Any", "Union", "Optional", "Generator",
+    "Iterable", "Iterator", "TextIO",
+    "QObject", "Qt", "Slot", "QmlElement", "QmlSingleton",
+    "QML_IMPORT_NAME", "QML_IMPORT_MAJOR_VERSION",
     "ExitCode", "Encoding", "IS_WINDOWS", "IS_CYGWIN", "IS_MSYS", "IS_MACOS",
     "static_vars", "unique",
 ]
