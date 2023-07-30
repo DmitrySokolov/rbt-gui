@@ -69,7 +69,7 @@ Pane {
                         }
                     }
                 }  // ListView: _flist
-            }
+            }  // ColumnLayout
         }  // ColumnLayout
 
         ColumnLayout {

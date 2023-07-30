@@ -6,7 +6,7 @@ param (
 try {
     Push-Location $PSScriptRoot
 
-    if ($Reinstall -and Test-Path .\__venv__) {
+    if ($Reinstall -and (Test-Path .\__venv__)) {
         Remove-Item .\__venv__ -Recurse
     }
 

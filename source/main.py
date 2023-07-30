@@ -29,7 +29,7 @@ def main():
 
     engine = QQmlApplicationEngine()
     engine.addImportPath(APP_DIR)
-    engine.loadFromModule("RbtGui", "Main")
+    engine.loadFromModule("RbtGui", "MainWindow")
 
     if not engine.rootObjects():
         sys.exit(-1)

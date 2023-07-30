@@ -39,12 +39,25 @@ Popup {
             Layout.fillWidth: true
             Layout.bottomMargin: _popup.mbSpacing * 2
         }
-        Label {
-            id: _message
-            text: "The text of the message."
-            wrapMode: Text.Wrap
+        Flickable {
+            id: _flickable
             Layout.fillWidth: true
             Layout.fillHeight: true
+            contentWidth: width
+            contentHeight: _message.height
+            clip: true
+
+            ScrollIndicator.vertical: ScrollIndicator {
+                active: true
+            }
+
+            Label {
+                id: _message
+                text: "The text of the message."
+                wrapMode: Text.Wrap
+                width: _flickable.width
+                height: Math.max(implicitHeight, _flickable.height)
+            }
         }
         RowLayout {
             Layout.fillWidth: true
