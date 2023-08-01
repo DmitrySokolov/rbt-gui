@@ -11,7 +11,9 @@ Pane {
     height: 400
     padding: 8
 
-    property string title: RbtGuiFunctions.basename(appWindow.projectFolder)
+    required property MainWindow appWindow
+
+    property string title: RbtGuiFunctions.basename(RbtGuiData.projectFolder)
 
     ColumnLayout {
         anchors.fill: parent

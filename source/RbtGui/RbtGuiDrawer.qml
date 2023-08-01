@@ -8,6 +8,8 @@ import RbtGui
 Drawer {
     id: _drawer
 
+    required property MainWindow appWindow
+
     property real itemLeftPadding: 0
     property real itemTopPadding: 0
 
@@ -24,7 +26,7 @@ Drawer {
                 Layout.fillWidth: true
                 onClicked: {
                     _drawer.close()
-                    fileDialog.open()
+                    _drawer.appWindow.fileDialog.open()
                 }
             }
 
@@ -58,7 +60,7 @@ Drawer {
                     leftPadding: _drawer.itemLeftPadding * 3
                     onClicked: {
                         _drawer.close()
-                        appWindow.openProject(appWindow.projectList[index])
+                        RbtGuiData.openProject(RbtGuiData.projectList[index])
                     }
                 }
             }  // ListView: _knownProjects
@@ -66,13 +68,13 @@ Drawer {
             ItemDelegate {
                 text: qsTr("Settings...")
                 Layout.fillWidth: true
-                onClicked: appWindow.activatePage("RbtGuiSettingsPage.qml")
+                onClicked: _drawer.appWindow.activatePage("RbtGuiSettingsPage.qml")
             }
 
             ItemDelegate {
                 text: qsTr("About...")
                 Layout.fillWidth: true
-                onClicked: appWindow.activatePage("RbtGuiAboutPage.qml")
+                onClicked: _drawer.appWindow.activatePage("RbtGuiAboutPage.qml")
             }
 
             ItemDelegate {
@@ -90,13 +92,15 @@ Drawer {
         Component.onCompleted: {
             _drawer.itemLeftPadding = _addProjectItem.leftPadding
             _drawer.itemTopPadding = _addProjectItem.topPadding
-            appWindow.projectList.forEach(val => _knownProjectsList.append({"name": val}))
         }
 
         Connections {
-            target: appSettings
+            target: _drawer.appWindow.appSettings
             function onProjectAdded(path) {
                 _knownProjectsList.append({"name": path})
+            }
+            function onLoaded() {
+                RbtGuiData.projectList.forEach(val => _knownProjectsList.append({"name": val}))
             }
         }
 

@@ -11,7 +11,9 @@ Pane {
     height: 400
     padding: 8
 
-    property string title: RbtGuiFunctions.basename(appWindow.projectFolder) + " - " + qsTr("Close review")
+    required property MainWindow appWindow
+
+    property string title: RbtGuiFunctions.basename(RbtGuiData.projectFolder) + " - " + qsTr("Close review")
 
     ColumnLayout {
         anchors.fill: parent

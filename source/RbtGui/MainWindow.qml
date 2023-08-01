@@ -7,12 +7,15 @@ import QtQuick.Dialogs
 import RbtGui
 
 ApplicationWindow {
-    id: appWindow
+    id: _appWindow
     width: 800
     height: 600
     visible: true
     visibility: Window.AutomaticVisibility
     title: "Review Board Tools GUI"
+
+    required property ToolBar toolbar
+    required property Drawer drawer
 
     SystemPalette {
         id: sysPalette
@@ -21,18 +24,12 @@ ApplicationWindow {
         property bool isDarkTheme: sysPalette.light.hsvValue < sysPalette.dark.hsvValue
     }
 
-    property var    projectList: []
-    property string projectFolder: ""
-    property var    repository
-
-    signal projectOpened(string projectFolder)
-
     Settings {
-        id: appSettings
-        property alias  app_x: appWindow.x
-        property alias  app_y: appWindow.y
-        property alias  app_width: appWindow.width
-        property alias  app_height: appWindow.height
+        id: _appSettings
+        property alias  app_x: _appWindow.x
+        property alias  app_y: _appWindow.y
+        property alias  app_width: _appWindow.width
+        property alias  app_height: _appWindow.height
         property int    app_visibility: 1
 
         property string app_language: ""
@@ -43,40 +40,31 @@ ApplicationWindow {
         property string app_opendlg_folder: ""
 
         function addProject(path) {
-            const i = appWindow.projectList.indexOf(path)
-            if (i >= 0) { appWindow.projectList.splice(i, 1) }
-            appWindow.projectList.unshift(path)
-            appSettings.app_project_list = appWindow.projectList.join("\n")
-            appSettings.app_project_count = appWindow.projectList.length
-            appSettings.sync()
-            console.info(`projectAdded: '${path}'`)
-            projectAdded(path)
+            const i = RbtGuiData.projectList.indexOf(path)
+            if (i >= 0) { RbtGuiData.projectList.splice(i, 1) }
+            RbtGuiData.projectList.unshift(path)
+            _appSettings.app_project_list = RbtGuiData.projectList.join("\n")
+            _appSettings.app_project_count = RbtGuiData.projectList.length
+            _appSettings.sync()
+            console.info(`AppSettings.projectAdded: '${path}'`)
+            _appSettings.projectAdded(path)
         }
 
         signal projectAdded(string path)
+        signal loaded()
     }
-
-    header: RbtGuiToolBar {
-        id: toolbar
-    }
-
-    RbtGuiDrawer {
-        id: drawer
-        width: appWindow.width * 0.4
-        height: appWindow.height
-        onClosed: appWindow.resetFocus()
-    }
+    property alias appSettings: _appSettings
 
     StackView {
-        id: stackView
+        id: _stackView
         anchors.fill: parent
 
-        Component.onCompleted: appWindow.activatePage("RbtGuiStartPage.qml")
+        Component.onCompleted: _appWindow.activatePage("RbtGuiStartPage.qml")
 
         focus: true
         Keys.onBackPressed: {
-            if (stackView.depth > 1) {
-                appWindow.activatePreviousPage()
+            if (_stackView.depth > 1) {
+                _appWindow.activatePreviousPage()
             } else {
                 handleEscapePressed()
             }
@@ -98,79 +86,90 @@ ApplicationWindow {
             }
         }
     }
+    property alias stackView: _stackView
 
     FileDialog {
-        id: fileDialog
+        id: _fileDialog
         nameFilters: [
             "Review Board RC file (.reviewboardrc)"
         ]
         onAccepted: {
-            const projectFolder = RbtGuiFunctions.urlToLocalPath(fileDialog.currentFolder)
-            appSettings.app_opendlg_folder = projectFolder
-            appSettings.addProject(projectFolder)
-            appWindow.openProject(projectFolder)
+            const projectFolder = RbtGuiFunctions.urlToLocalPath(_fileDialog.currentFolder)
+            _appSettings.app_opendlg_folder = projectFolder
+            _appSettings.addProject(projectFolder)
+            RbtGuiData.openProject(projectFolder)
         }
         onRejected: {
-            appSettings.app_opendlg_folder = RbtGuiFunctions.urlToLocalPath(fileDialog.currentFolder)
+            _appSettings.app_opendlg_folder = RbtGuiFunctions.urlToLocalPath(_fileDialog.currentFolder)
         }
     }
+    property alias fileDialog: _fileDialog
 
     RbtGuiMessageDialog {
         id: messageDialog
     }
 
     onVisibilityChanged: {
-        if (appWindow.visible) {
-            appSettings.app_visibility = appWindow.visibility
+        if (_appWindow.visible) {
+            _appSettings.app_visibility = _appWindow.visibility
         }
     }
 
     Component.onCompleted: {
-        appWindow.visibility = appSettings.app_visibility
+        _appWindow.visibility = _appSettings.app_visibility
 
-        if (appSettings.app_language === "") {
-            appSettings.app_language = Qt.locale().name
+        if (_appSettings.app_language === "") {
+            _appSettings.app_language = Qt.locale().name
         }
 
-        const list_ = appSettings.app_project_list ?? ""
-        appWindow.projectList = list_.split("\n").filter(s => s.length)
+        const list_ = _appSettings.app_project_list ?? ""
+        RbtGuiData.projectList = list_.split("\n").filter(s => s.length)
 
-        if (appSettings.app_opendlg_folder.length > 0) {
-            fileDialog.currentFolder = RbtGuiFunctions.localPathToUrl(
-                    appSettings.app_opendlg_folder,
+        if (_appSettings.app_opendlg_folder.length > 0) {
+            _fileDialog.currentFolder = RbtGuiFunctions.localPathToUrl(
+                    _appSettings.app_opendlg_folder,
                     RbtGuiFunctions.PathIsDir)
+        }
+        _appSettings.loaded()
+    }
+
+    Connections {
+        target: RbtGuiData
+        function onProjectOpened(path) {
+            _appWindow.activatePage("RbtGuiRepositoryPage.qml", /*clearStack=*/true)
         }
     }
 
     function resetFocus() {
-        stackView.focus = true  // to catch 'backPressed' event
+        _stackView.focus = true  // to catch 'backPressed' event
     }
 
     function activatePage(name, clearStack) {
-        if (clearStack) { stackView.clear() }
-        if (stackView.currentItem && stackView.currentItem.objectName === name) { return }
-        drawer.close()
-        stackView.push(name)
-        stackView.currentItem.objectName = name
-        stackView.currentItem.width = Qt.binding(() => stackView.width)
-        stackView.currentItem.height = Qt.binding(() => stackView.height)
+        if (clearStack) { _stackView.clear() }
+        if (_stackView.currentItem && _stackView.currentItem.objectName === name) { return }
+        closeDrawer()
+        _stackView.push(name, {appWindow: _appWindow})
+        _stackView.currentItem.objectName = name
+        _stackView.currentItem.width = Qt.binding(() => _stackView.width)
+        _stackView.currentItem.height = Qt.binding(() => _stackView.height)
         resetFocus()
     }
 
     function activatePreviousPage() {
-        stackView.pop()
+        _stackView.pop()
         resetFocus()
     }
 
-    function openProject(projectFolder) {
-        console.info(`opening: '${projectFolder}'`)
-        appWindow.projectFolder = projectFolder
-        const t = Repository.getVcsType(projectFolder)
-        if (t === "svn") {
-            appWindow.repository = SvnRepository
-        }
-        appWindow.activatePage("RbtGuiRepositoryPage.qml", /*clearStack=*/true)
-        appWindow.projectOpened(projectFolder)
+    function getActivePageTitle() {
+        return _stackView.currentItem ? _stackView.currentItem.title : ""
+    }
+
+    function closeDrawer() {
+        drawer.close()
+    }
+
+    function openDrawer() {
+        drawer.open()
     }
 
 }  // ApplicationWindow

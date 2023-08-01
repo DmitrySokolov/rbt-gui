@@ -7,14 +7,17 @@ import RbtGui
 
 ToolBar {
     id: _toolbar
-    width: appWindow.width
-    height: RbtGuiConst.tbButtonHeight
 
-    Keys.forwardTo: [stackView]
+    required property MainWindow appWindow
+
+    width: appWindow.width
+    height: RbtGuiData.tbButtonHeight
+
+    Keys.forwardTo: [appWindow.stackView]
 
     RowLayout {
         anchors.fill: parent
-        spacing: RbtGuiConst.tbSpacing
+        spacing: RbtGuiData.tbSpacing
 
         Flickable {
             Layout.fillWidth: true
@@ -30,7 +33,7 @@ ToolBar {
 
             RowLayout {
                 id: _tbRow
-                spacing: RbtGuiConst.tbSpacing
+                spacing: RbtGuiData.tbSpacing
 
                 component RbtGuiToolButton : ToolButton {
                     Layout.preferredHeight: _toolbar.height
@@ -39,8 +42,8 @@ ToolBar {
                     ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
                     Universal.accent: "#FFA0A0A0"
                     icon.color: "transparent"
-                    icon.width: RbtGuiConst.tbIconWidth
-                    icon.height: RbtGuiConst.tbIconHeight
+                    icon.width: RbtGuiData.tbIconWidth
+                    icon.height: RbtGuiData.tbIconHeight
                     display: AbstractButton.IconOnly
                     opacity: parent.enabled ? 1.0 : 0.5
                 }
@@ -49,16 +52,16 @@ ToolBar {
                     ToolTip.text: qsTr("Menu")
 
                     id: _tbMenuBtn
-                    text: stackView.depth > 1 ? "\u25C0" : "\u2261"
+                    text: _toolbar.appWindow.stackView.depth > 1 ? "\u25C0" : "\u2261"
                     font.pixelSize: Qt.application.font.pixelSize * 1.6
                     display: AbstractButton.TextOnly
                     opacity: 1.0
 
                     onClicked: {
-                        if (stackView.depth > 1) {
-                            appWindow.activatePreviousPage()
+                        if (_toolbar.appWindow.stackView.depth > 1) {
+                            _toolbar.appWindow.activatePreviousPage()
                         } else {
-                            drawer.open()
+                            _toolbar.appWindow.openDrawer()
                         }
                     }
                 }
@@ -77,8 +80,8 @@ ToolBar {
                         }
                         RowLayout {
                             id: _repositoryButtonsRow
-                            spacing: RbtGuiConst.tbSpacing
-                            enabled: stackView.depth < 2
+                            spacing: RbtGuiData.tbSpacing
+                            enabled: _toolbar.appWindow.stackView.depth < 2
 
                             RbtGuiToolButton {
                                 id: _repositoryPageBtn
@@ -86,30 +89,30 @@ ToolBar {
                                 icon.source: "Icons/repo_props.svg"
                                 checkable: true
                                 checked: true
-                                onClicked: appWindow.activatePage("RbtGuiRepositoryPage.qml", /*clearStack=*/true)
+                                onClicked: _toolbar.appWindow.activatePage("RbtGuiRepositoryPage.qml", /*clearStack=*/true)
                             }
                             RbtGuiToolButton {
                                 ToolTip.text: qsTr("Add review")
                                 icon.source: "Icons/review_add.svg"
                                 checkable: true
-                                onClicked: appWindow.activatePage("RbtGuiReviewAddPage.qml", /*clearStack=*/true)
+                                onClicked: _toolbar.appWindow.activatePage("RbtGuiReviewAddPage.qml", /*clearStack=*/true)
                             }
                             RbtGuiToolButton {
                                 ToolTip.text: qsTr("Update review")
                                 icon.source: "Icons/review_update.svg"
                                 checkable: true
-                                onClicked: appWindow.activatePage("RbtGuiReviewUpdatePage.qml", /*clearStack=*/true)
+                                onClicked: _toolbar.appWindow.activatePage("RbtGuiReviewUpdatePage.qml", /*clearStack=*/true)
                             }
                             RbtGuiToolButton {
                                 ToolTip.text: qsTr("Close review")
                                 icon.source: "Icons/review_close.svg"
                                 checkable: true
-                                onClicked: appWindow.activatePage("RbtGuiReviewClosePage.qml", /*clearStack=*/true)
+                                onClicked: _toolbar.appWindow.activatePage("RbtGuiReviewClosePage.qml", /*clearStack=*/true)
                             }
                         }
                         Connections {
-                            target: appWindow
-                            function onProjectOpened(projectFolder) {
+                            target: RbtGuiData
+                            function onProjectOpened(path) {
                                 _repositoryPageBtn.checked = true
                             }
                         }
@@ -125,7 +128,7 @@ ToolBar {
             Layout.minimumHeight: _toolbar.height
             Layout.preferredHeight: _toolbar.height
             Layout.maximumHeight: _toolbar.height
-            Layout.rightMargin: RbtGuiConst.tbSpacing *2
+            Layout.rightMargin: RbtGuiData.tbSpacing *2
             contentWidth: _label.width
             contentHeight: _toolbar.height
             contentX: contentWidth - width
@@ -133,7 +136,7 @@ ToolBar {
 
             Label {
                 id: _label
-                text: stackView.currentItem ? stackView.currentItem.title : ""
+                text: _toolbar.appWindow.getActivePageTitle()
                 horizontalAlignment: Text.AlignRight
                 verticalAlignment: Text.AlignVCenter
                 width: Math.max(implicitWidth, _title.width)
@@ -150,8 +153,8 @@ ToolBar {
     }
 
     Connections {
-        target: appWindow
-        function onProjectOpened(projectFolder) {
+        target: RbtGuiData
+        function onProjectOpened(path) {
             _loader.sourceComponent = _repositoryButtons
         }
     }

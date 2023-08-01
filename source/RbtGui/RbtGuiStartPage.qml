@@ -11,6 +11,8 @@ Pane {
     height: 400
     padding: 8
 
+    required property MainWindow appWindow
+
     property string title: qsTr("Getting started")
 
     Label {

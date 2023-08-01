@@ -11,11 +11,13 @@ Pane {
     height: 400
     padding: 8
 
-    property string title: RbtGuiFunctions.basename(appWindow.projectFolder) + " - " + qsTr("Add review")
+    required property MainWindow appWindow
+
+    property string title: RbtGuiFunctions.basename(RbtGuiData.projectFolder) + " - " + qsTr("Add review")
     property bool _initialized: false
 
     StackView.onActivated: {
-        _root.openProject(appWindow.projectFolder)
+        _root.openProject(RbtGuiData.projectFolder)
     }
 
     SplitView {
@@ -106,16 +108,16 @@ Pane {
                         }
                     }
                     Button {
-                        Layout.preferredWidth: RbtGuiConst.tbButtonWidth
-                        Layout.preferredHeight: RbtGuiConst.tbButtonHeight
+                        Layout.preferredWidth: RbtGuiData.tbButtonWidth
+                        Layout.preferredHeight: RbtGuiData.tbButtonHeight
                         Layout.alignment: Qt.AlignBottom
                         ToolTip.visible: hovered || pressed
                         ToolTip.delay: Qt.styleHints.mousePressAndHoldInterval
                         ToolTip.text: qsTr("Fetch summary using bug ID")
                         icon.source: "Icons/bugz_fetch.svg"
                         icon.color: "transparent"
-                        icon.width: RbtGuiConst.tbIconWidth
-                        icon.height: RbtGuiConst.tbIconHeight
+                        icon.width: RbtGuiData.tbIconWidth
+                        icon.height: RbtGuiData.tbIconHeight
                         display: AbstractButton.IconOnly
                     }
                 }
@@ -170,7 +172,7 @@ Pane {
 
     function openProject(projectFolder) {
         if (_root._initialized) { return }
-        _flist.model = appWindow.repository
+        _flist.model = RbtGuiData.repository
         _flist.model.getModifiedFiles(projectFolder)
         _root._initialized = true
     }
